@@ -56,11 +56,6 @@ class Random
      */
     public static function pickInt(int $min, int $max): int
     {
-        if (($max - $min) > getrandmax()) {
-
-            throw new \Random\RandomException("This value are over than maximum!");
-        }
-
         return self::getInstance()->pickInt($min, $max);
     }
 
