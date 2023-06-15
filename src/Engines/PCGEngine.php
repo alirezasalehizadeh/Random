@@ -10,13 +10,6 @@ use \Random\Engine\PcgOneseq128XslRr64 as RandomPCG;
 class PCGEngine extends Engine
 {
 
-    /**
-     * Engine instance
-     *
-     * @var \Alirezasalehizadeh\Random\Engines\Engine
-     */
-    protected $engine;
-
     public function __construct()
     {
         $this->engine = new RandomPCG;

@@ -9,12 +9,6 @@ use \Random\Engine\Mt19937 as RandomMersenneTwister;
 
 class MersenneTwisterEngine extends Engine
 {
-    /**
-     * Engine instance
-     *
-     * @var \Alirezasalehizadeh\Random\Engines\Engine
-     */
-    protected $engine;
 
     public function __construct()
     {

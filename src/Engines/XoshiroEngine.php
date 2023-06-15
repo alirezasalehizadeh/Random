@@ -10,13 +10,6 @@ use \Random\Engine\Xoshiro256StarStar as RandomXoshiro;
 class XoshiroEngine extends Engine
 {
 
-    /**
-     * Engine instance
-     *
-     * @var \Alirezasalehizadeh\Random\Engines\Engine
-     */
-    protected $engine;
-
     public function __construct()
     {
         $this->engine = new RandomXoshiro;
