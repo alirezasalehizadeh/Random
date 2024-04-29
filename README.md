@@ -4,7 +4,7 @@ An PHP tool for generate random values easily.
 
 ##  Requirements
 
-PHP >= 8.2
+PHP >= 8.3
 
 ## Installation
 via Composer:
@@ -15,82 +15,73 @@ composer require alirezasalehizadeh/random
 
 ## Usage
 #### Integer
+###### Generate an random int
 ```php
 use Alirezasalehizadeh\Random;
 
-
-// Generate an random int
-(new Random)->randomInt(): int
-
-// Pick an random int between min and max
-(new Random)->pickInt($min, $max): int
+Random::int($min = null, $max = null)
 ```
-#### String
+
+#### Float
+###### Generate an random float
+```php
+use Random\IntervalBoundary;
+use Alirezasalehizadeh\Random;
+
+Random::float($min = null, $max = null, $boundary = IntervalBoundary::ClosedOpen)
+```
+
+#### Byte
+###### Generate an random bytes with specific length
 ```php
 use Alirezasalehizadeh\Random;
 
+Random::byte($length)
+```
 
-// Generate an random string with specific length
-(new Random)->randomString(int $length): string
+#### String
+###### Generate an random string from given string
+```php
+use Alirezasalehizadeh\Random;
 
-// Generate an random string from given string
-(new Random)->pickString(string $bytes): string
+Random::string($bytes, $length = null)
 ```
 #### Array
+###### Generate an random array from given array
 ```php
 use Alirezasalehizadeh\Random;
 
-
-// Generate an random array from given array
-(new Random)->randomArray(array $array): array
-
-// Pick random elements from given array
-(new Random)->choice(array $array, int $num): array
+Random::array($array)
 ```
-### Engines
-You can use engines in `/Engines` for generate random string values:
-#### Mt19937(Mersenne Twister)
+###### Pick random elements from given array
 ```php
 use Alirezasalehizadeh\Random;
-use Alirezasalehizadeh\Random\Engines\MersenneTwisterEngine;
 
-
-(new Random(new MersenneTwisterEngine))->getEngine()->generate(): string
-
+Random::pick($array, $num = 1)
 ```
-#### PcgOneseq128XslRr64
+
+### [Engines](https://www.php.net/manual/en/class.random-engine.php)
+#### [Mt19937(Mersenne Twister)](https://www.php.net/manual/en/class.random-engine-mt19937.php)
+```php
+use Random\Engine\Mt19937;
+use Alirezasalehizadeh\Random;
+
+(new Random(new Mt19937))->generate()
+```
+#### [PcgOneseq128XslRr64](https://www.php.net/manual/en/class.random-engine-pcgoneseq128xslrr64.php)
 ```php
 use Alirezasalehizadeh\Random;
-use Alirezasalehizadeh\Random\Engines\PCGEngine;
+use Random\Engine\PcgOneseq128XslRr64;
 
-
-(new Random(new PCGEngine))->getEngine()->generate(): string
-
+(new Random(new PcgOneseq128XslRr64))->generate()
 ```
-#### Xoshiro256StarStar
+#### [Xoshiro256StarStar](https://www.php.net/manual/en/class.random-engine-xoshiro256starstar.php)
 ```php
 use Alirezasalehizadeh\Random;
-use Alirezasalehizadeh\Random\Engines\XoshiroEngine;
+use Random\Engine\Xoshiro256StarStar;
 
-
-(new Random(new XoshiroEngine))->getEngine()->generate(): string
-
+(new Random(new Xoshiro256StarStar))->generate()
 ```
-### Facades
-```php
-use Alirezasalehizadeh\Random\Facades\Random;
-
-Random::randomInt(): int
-Random::pickInt($min, $max): int
-
-Random::randomString(int $length): string
-Random::pickString(string $bytes): string
-
-Random::randomArray(array $array): array
-Random::choice(array $array, int $num): array
-
-```
-
 
 ## Contributing
 Send pull request or open issue for contributing.

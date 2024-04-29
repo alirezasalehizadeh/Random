@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Alirezasalehizadeh\Random;
 
-use Alirezasalehizadeh\Random\Engines\Engine;
-use \Random\Randomizer;
+use Random\Engine;
+use Random\Randomizer;
+use Random\IntervalBoundary;
 
 class Random
 {
@@ -13,70 +14,82 @@ class Random
     /**
      * Randomizer instance
      *
-     * @var \Random\Randomizer
+     * @var Random\Randomizer
      */
-    private $random;
+    private static Randomizer $random;
 
     /**
      * Engine instance
      *
-     * @var \Alirezasalehizadeh\Random\Engines\Engine
+     * @var Random\Engine;
      */
-    private $engine;
+    public ?Engine $engine;
 
-    public function __construct(Engine $engine = null)
-    {
+    public function __construct(
+        ?Engine $engine = null
+    ) {
         $this->engine = $engine;
-        $this->random = new Randomizer($this->engine);
+        self::$random = new Randomizer($engine);
     }
 
     /**
-     * Generate an random string with specific length
+     * Generate an random bytes with specific length
      *
-     * @param integer $length
+     * @param int $length
      * @return string
      */
-    public function randomString(int $length): string
+    public static function byte(int $length): string
     {
-        return $this->random->getBytes($length);
+        return self::$random->getBytes($length);
     }
 
     /**
      * Generate an random string from given string
      *
      * @param string $bytes
+     * @param int|null $length
      * @return string
      */
-    public function pickString(string $bytes): string
+    public static function string(string $bytes, int|null $length = null): string
     {
-        return $this->random->shuffleBytes($bytes);
+        if ($length) {
+            return self::$random->getBytesFromString($bytes, $length);
+        }
+
+        return self::$random->shuffleBytes($bytes);
     }
 
     /**
      * Generate an random int
      *
-     * @return integer
+     * @param int|null $min
+     * @param int|null $max
+     * @return int
      */
-    public function randomInt(): int
+    public static function int(int|null $min = null, int|null $max = null): int
     {
-        return $this->random->nextInt();
+        if ($min && $max) {
+            return self::$random->getInt($min, $max);
+        }
+
+        return self::$random->nextInt();
     }
 
     /**
-     * Pick an random int between min and max
+     * Generate an random float
      *
-     * @param integer $min
-     * @param integer $max
-     * @return integer
+     * @param float|null $min
+     * @param float|null $max
+     * @param Random\IntervalBoundary $boundary
+     * @return float
      */
-    public function pickInt(int $min, int $max): int
+    public static function float(float|null $min = null, float|null $max = null, IntervalBoundary $boundary = IntervalBoundary::ClosedOpen): float
     {
-        if (($max - $min) > getrandmax()) {
-
-            throw new \Random\RandomException("This value are over than maximum!");
+        if ($min && $max) {
+            return self::$random->getFloat($min, $max, $boundary);
         }
 
-        return $this->random->getInt($min, $max);
+        return self::$random->nextFloat();
     }
 
     /**
@@ -85,32 +98,34 @@ class Random
      * @param array $array
      * @return array
      */
-    public function randomArray(array $array): array
+    public static function array(array $array): array
     {
-        return $this->random->shuffleArray($array);
+        return self::$random->shuffleArray($array);
     }
 
     /**
      * Pick random elements from given array
      *
      * @param array $array
-     * @param integer $num
+     * @param int $num
      * @return array
      */
-    public function choice(array $array, int $num = 1): array
+    public static function pick(array $array, int $num = 1): array
     {
-        return $this->random->pickArrayKeys(array_flip($array), $num);
+        return self::$random->pickArrayKeys(array_flip($array), $num);
     }
 
-    public function setEngine(Engine $engine = null)
+    /**
+     * Call the engine methods
+     *
+     * @param string $name
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
     {
-        $this->engine = $engine;
-
-        return $this;
-    }
-
-    public function getEngine()
-    {
-        return $this->engine;
+        if ($this->engine) {
+            return $this->engine->$name(...$arguments);
+        }
     }
 }
