@@ -40,7 +40,7 @@ class Random
      */
     public static function byte(int $length): string
     {
-        return self::$random->getBytes($length);
+        return self::getInstance()->getBytes($length);
     }
 
     /**
@@ -53,10 +53,10 @@ class Random
     public static function string(string $bytes, int|null $length = null): string
     {
         if ($length) {
-            return self::$random->getBytesFromString($bytes, $length);
+            return self::getInstance()->getBytesFromString($bytes, $length);
         }
 
-        return self::$random->shuffleBytes($bytes);
+        return self::getInstance()->shuffleBytes($bytes);
     }
 
     /**
@@ -69,10 +69,10 @@ class Random
     public static function int(int|null $min = null, int|null $max = null): int
     {
         if ($min && $max) {
-            return self::$random->getInt($min, $max);
+            return self::getInstance()->getInt($min, $max);
         }
 
-        return self::$random->nextInt();
+        return self::getInstance()->nextInt();
     }
 
     /**
@@ -86,10 +86,10 @@ class Random
     public static function float(float|null $min = null, float|null $max = null, IntervalBoundary $boundary = IntervalBoundary::ClosedOpen): float
     {
         if ($min && $max) {
-            return self::$random->getFloat($min, $max, $boundary);
+            return self::getInstance()->getFloat($min, $max, $boundary);
         }
 
-        return self::$random->nextFloat();
+        return self::getInstance()->nextFloat();
     }
 
     /**
@@ -100,7 +100,7 @@ class Random
      */
     public static function array(array $array): array
     {
-        return self::$random->shuffleArray($array);
+        return self::getInstance()->shuffleArray($array);
     }
 
     /**
@@ -112,7 +112,7 @@ class Random
      */
     public static function pick(array $array, int $num = 1): array
     {
-        return self::$random->pickArrayKeys(array_flip($array), $num);
+        return self::getInstance()->pickArrayKeys(array_flip($array), $num);
     }
 
     /**
@@ -127,5 +127,10 @@ class Random
         if ($this->engine) {
             return $this->engine->$name(...$arguments);
         }
+    }
+
+    private static function getInstance(): Randomizer
+    {
+        return self::$random ?? new Randomizer;
     }
 }
